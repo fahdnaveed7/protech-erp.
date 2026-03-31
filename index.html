@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0369a1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Protech Production Tracker</title>
+  <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiUHJvdGVjaCBUcmFja2VyIiwic2hvcnRfbmFtZSI6IlByb3RlY2giLCJzdGFydF91cmwiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiI2ZmZmZmZiIsInRoZW1lX2NvbG9yIjoiIzAzNjlhMSIsImljb25zIjpbeyJzcmMiOiJkYXRhOmltYWdlL3N2Zyt4bWwsJTNDc3ZnJTIweG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyUyMHZpZXdCb3g9JzAlMjAwJTIwMTAwJTIwMTAwJyUzRSUzQ3JlY3QlMjBmaWxsPSclMjMwMzY5YTEnJTIwd2lkdGg9JzEwMCclMjBoZWlnaHQ9JzEwMCclMkYlM0UlM0N0ZXh0JTIweD0nNTAlMjUlMjd5PSc1MCUyNSclMjBmb250LXNpemU9JzQ1JyUyMHRleHQtYW5jaG9yPSdtaWRkbGUnJTIwZHk9Jy4zNWVtJyUyMGZpbGw9J3doaXRlJyUzRVAlM0MlMkZ0ZXh0JTNFJTNDJTJGc3ZnJTNFIiwic2l6ZXMiOiI1MTJ4NTEyIiwidHlwZSI6ImltYWdlL3N2Zyt4bWwifV19">
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #f1f5f9;
+      color: #1e293b;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    #root {
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0;
+    }
+    .header {
+      background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
+      color: white;
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .header .subtitle {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+    .logout-btn {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .content {
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #0f172a;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: #475569;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #0369a1;
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background: #0369a1;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 8px;
+    }
+    .btn:active {
+      background: #075985;
+    }
+    .btn-secondary {
+      background: #64748b;
+    }
+    .btn-secondary:active {
+      background: #475569;
+    }
+    .btn-danger {
+      background: #dc2626;
+    }
+    .btn-danger:active {
+      background: #b91c1c;
+    }
+    .pin-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
+    }
+    .pin-card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px 24px;
+      width: 100%;
+      max-width: 340px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    .pin-card h2 {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: #0f172a;
+    }
+    .pin-card p {
+      text-align: center;
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 28px;
+    }
+    .pin-input {
+      text-align: center;
+      font-size: 32px;
+      letter-spacing: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+    }
+    .pin-input:focus {
+      border-color: #0369a1;
+    }
+    .pin-pad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .pin-btn {
+      aspect-ratio: 1;
+      background: #f1f5f9;
+      border: none;
+      border-radius: 12px;
+      font-size: 24px;
+      font-weight: 600;
+      color: #0f172a;
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+    .pin-btn:active {
+      background: #e2e8f0;
+      transform: scale(0.95);
+    }
+    .grade-row {
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      border: 1px solid #e2e8f0;
+    }
+    .grade-row-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .grade-row-header h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .grade-row-header button {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .grade-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+    .list-item {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .list-item:active {
+      background: #f8fafc;
+      transform: scale(0.98);
+    }
+    .list-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .list-item-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .list-item-badge {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: #dbeafe;
+      color: #0369a1;
+      font-weight: 600;
+    }
+    .list-item-meta {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      padding: 16px 20px 0 20px;
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tab {
+      padding: 10px 16px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: #64748b;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .tab.active {
+      color: #0369a1;
+      border-bottom-color: #0369a1;
+    }
+    .photo-upload {
+      margin-top: 8px;
+    }
+    .photo-preview {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+    .timeline {
+      position: relative;
+      padding-left: 24px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #e2e8f0;
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -20px;
+      top: 4px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #0369a1;
+      border: 2px solid white;
+    }
+    .timeline-header {
+      font-size: 13px;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+    .timeline-meta {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+    .timeline-body {
+      font-size: 13px;
+      color: #475569;
+    }
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+    .alert-success {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+    .alert-error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat-card {
+      background: #f8fafc;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: #64748b;
+    }
+    .empty-state svg {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+    .loading {
+      text-align: center;
+      padding: 40px 20px;
+      color: #64748b;
+    }
+    .filter-group {
+      margin-bottom: 16px;
+    }
+    input[type="file"] {
+      padding: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // Initialize Supabase
+    const supabase = window.supabase.createClient(
+      'https://inkephezabwcdlvnooaa.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlua2VwaGV6YWJ3Y2Rsdm5vb2FhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5MjQ5MzIsImV4cCI6MjA5MDUwMDkzMn0.I4H3mGOkLrm6vowkEbnHIlH6KjQBU5X6ZK0AhErTeHA'
+    );
+
+    // PIN authentication
+    const AUTH_PINS = {
+      '0000': 'manager',
+      '1111': 'receiving',
+      '2222': 'peeling',
+      '3333': 'production',
+      '4444': 'qc'
+    };
+
+    function PINLogin({ onLogin }) {
+      const [pin, setPin] = useState('');
+      const [error, setError] = useState('');
+
+      const handlePinChange = (e) => {
+        const value = e.target.value.replace(/\D/g, '').slice(0, 4);
+        setPin(value);
+        setError('');
+        
+        if (value.length === 4) {
+          const role = AUTH_PINS[value];
+          if (role) {
+            setTimeout(() => onLogin(role), 100);
+          } else {
+            setError('Invalid PIN');
+            setTimeout(() => setPin(''), 500);
+          }
+        }
+      };
+
+      const handleNumPad = (num) => {
+        if (pin.length < 4) {
+          const newPin = pin + num;
+          setPin(newPin);
+          setError('');
+          
+          if (newPin.length === 4) {
+            const role = AUTH_PINS[newPin];
+            if (role) {
+              setTimeout(() => onLogin(role), 100);
+            } else {
+              setError('Invalid PIN');
+              setTimeout(() => setPin(''), 500);
+            }
+          }
+        }
+      };
+
+      const handleClear = () => {
+        setPin('');
+        setError('');
+      };
+
+      return (
+        <div className="pin-screen">
+          <div className="pin-card">
+            <h2>Protech Tracker</h2>
+            <p>Enter your 4-digit PIN</p>
+            <input
+              type="password"
+              inputMode="numeric"
+              maxLength="4"
+              value={pin}
+              onChange={handlePinChange}
+              className="pin-input"
+              autoFocus
+              placeholder="••••"
+            />
+            {error && <div className="alert alert-error">{error}</div>}
+            <div className="pin-pad">
+              {[1,2,3,4,5,6,7,8,9].map(num => (
+                <button key={num} className="pin-btn" onClick={() => handleNumPad(num.toString())}>
+                  {num}
+                </button>
+              ))}
+              <button className="pin-btn" onClick={handleClear}>✕</button>
+              <button className="pin-btn" onClick={() => handleNumPad('0')}>0</button>
+              <button className="pin-btn" onClick={() => setPin(pin.slice(0, -1))}>⌫</button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // RM Receiving Component
+    function RMReceiving() {
+      const [formData, setFormData] = useState({
+        plateNumber: '',
+        species: '',
+        arrivalDate: new Date().toISOString().split('T')[0]
+      });
+      const [grades, setGrades] = useState([]);
+      const [myLots, setMyLots] = useState([]);
+      const [loading, setLoading] = useState(false);
+      const [message, setMessage] = useState({ type: '', text: '' });
+
+      useEffect(() => {
+        loadMyLots();
+      }, []);
+
+      const loadMyLots = async () => {
+        const { data, error } = await supabase
+          .from('lots')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(20);
+        
+        if (!error && data) {
+          setMyLots(data);
+        }
+      };
+
+      const addGrade = () => {
+        setGrades([...grades, { grade: '', count: '', boxes: '' }]);
+      };
+
+      const removeGrade = (index) => {
+        setGrades(grades.filter((_, i) => i !== index));
+      };
+
+      const updateGrade = (index, field, value) => {
+        const updated = [...grades];
+        updated[index][field] = value;
+        setGrades(updated);
+      };
+
+      const generateLotNumber = async () => {
+        const year = new Date().getFullYear().toString().slice(-2);
+        
+        const { data, error } = await supabase
+          .from('lots')
+          .select('lot_number')
+          .like('lot_number', `%/${year}`)
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        if (error) {
+          console.error('Error fetching last lot:', error);
+          return `1/${year}`;
+        }
+
+        if (data && data.length > 0) {
+          const lastLot = data[0].lot_number;
+          const lastNum = parseInt(lastLot.split('/')[0]);
+          return `${lastNum + 1}/${year}`;
+        }
+
+        return `1/${year}`;
+      };
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        if (grades.length === 0) {
+          setMessage({ type: 'error', text: 'Please add at least one grade' });
+          return;
+        }
+
+        setLoading(true);
+        setMessage({ type: '', text: '' });
+
+        try {
+          const lotNumber = await generateLotNumber();
+          const totalBoxes = grades.reduce((sum, g) => sum + (parseInt(g.boxes) || 0), 0);
+
+          const { data: lotData, error: lotError } = await supabase
+            .from('lots')
+            .insert({
+              lot_number: lotNumber,
+              plate_number: formData.plateNumber,
+              species: formData.species,
+              arrival_date: formData.arrivalDate,
+              total_boxes: totalBoxes,
+              arrival_timestamp: new Date().toISOString()
+            })
+            .select()
+            .single();
+
+          if (lotError) throw lotError;
+
+          const gradeInserts = grades.map(g => ({
+            lot_number: lotNumber,
+            grade: g.grade,
+            count: g.count,
+            boxes: parseInt(g.boxes) || 0
+          }));
+
+          const { error: gradeError } = await supabase
+            .from('lot_grades')
+            .insert(gradeInserts);
+
+          if (gradeError) throw gradeError;
+
+          setMessage({ type: 'success', text: `Lot ${lotNumber} created successfully` });
+          setFormData({ plateNumber: '', species: '', arrivalDate: new Date().toISOString().split('T')[0] });
+          setGrades([]);
+          loadMyLots();
+        } catch (error) {
+          setMessage({ type: 'error', text: error.message });
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      return (
+        <div className="content">
+          <div className="card">
+            <h3>Log Truck Arrival</h3>
+            {message.text && (
+              <div className={`alert alert-${message.type}`}>{message.text}</div>
+            )}
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label>Truck Plate Number</label>
+                <input
+                  type="text"
+                  value={formData.plateNumber}
+                  onChange={(e) => setFormData({...formData, plateNumber: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Species</label>
+                <input
+                  type="text"
+                  value={formData.species}
+                  onChange={(e) => setFormData({...formData, species: e.target.value})}
+                  placeholder="e.g., HLSO, PDTO"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Arrival Date</label>
+                <input
+                  type="date"
+                  value={formData.arrivalDate}
+                  onChange={(e) => setFormData({...formData, arrivalDate: e.target.value})}
+                  required
+                />
+              </div>
+
+              <h4 style={{marginTop: '24px', marginBottom: '12px', fontSize: '14px', fontWeight: '600'}}>
+                Grade Breakdown
+              </h4>
+              {grades.map((grade, index) => (
+                <div key={index} className="grade-row">
+                  <div className="grade-row-header">
+                    <h4>Grade {index + 1}</h4>
+                    <button type="button" onClick={() => removeGrade(index)}>Remove</button>
+                  </div>
+                  <div className="grade-grid">
+                    <div className="form-group" style={{marginBottom: 0}}>
+                      <label style={{fontSize: '11px'}}>Grade</label>
+                      <input
+                        type="text"
+                        value={grade.grade}
+                        onChange={(e) => updateGrade(index, 'grade', e.target.value)}
+                        placeholder="A/B/C"
+                        required
+                      />
+                    </div>
+                    <div className="form-group" style={{marginBottom: 0}}>
+                      <label style={{fontSize: '11px'}}>Count</label>
+                      <input
+                        type="text"
+                        value={grade.count}
+                        onChange={(e) => updateGrade(index, 'count', e.target.value)}
+                        placeholder="40/50"
+                        required
+                      />
+                    </div>
+                    <div className="form-group" style={{marginBottom: 0}}>
+                      <label style={{fontSize: '11px'}}>Boxes</label>
+                      <input
+                        type="number"
+                        value={grade.boxes}
+                        onChange={(e) => updateGrade(index, 'boxes', e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              <button type="button" className="btn btn-secondary" onClick={addGrade}>
+                + Add Grade
+              </button>
+
+              {grades.length > 0 && (
+                <div style={{marginTop: '12px', padding: '12px', background: '#f1f5f9', borderRadius: '8px', fontSize: '14px', fontWeight: '600'}}>
+                  Total Boxes: {grades.reduce((sum, g) => sum + (parseInt(g.boxes) || 0), 0)}
+                </div>
+              )}
+
+              <button type="submit" className="btn" disabled={loading}>
+                {loading ? 'Submitting...' : 'Submit Lot'}
+              </button>
+            </form>
+          </div>
+
+          <div className="card">
+            <h3>Recent Lots</h3>
+            {myLots.length === 0 ? (
+              <div className="empty-state">No lots submitted yet</div>
+            ) : (
+              myLots.map(lot => (
+                <div key={lot.id} className="list-item">
+                  <div className="list-item-header">
+                    <div className="list-item-title">{lot.lot_number}</div>
+                    <div className="list-item-badge">{lot.total_boxes} boxes</div>
+                  </div>
+                  <div className="list-item-meta">{lot.species} - {lot.plate_number}</div>
+                  <div className="list-item-meta">{new Date(lot.arrival_date).toLocaleDateString()}</div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // Peeling Component
+    function Peeling() {
+      const [lots, setLots] = useState([]);
+      const [selectedLot, setSelectedLot] = useState('');
+      const [formData, setFormData] = useState({
+        shedName: '',
+        inputKg: '',
+        outputSpecies: '',
+        outputGrade: '',
+        outputCount: '',
+        outputQtyKg: '',
+        yieldPercent: '',
+        boxesOut: ''
+      });
+      const [history, setHistory] = useState([]);
+      const [loading, setLoading] = useState(false);
+      const [message, setMessage] = useState({ type: '', text: '' });
+
+      useEffect(() => {
+        loadLots();
+        loadHistory();
+      }, []);
+
+      const loadLots = async () => {
+        const { data, error } = await supabase
+          .from('lots')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (!error && data) {
+          setLots(data);
+        }
+      };
+
+      const loadHistory = async () => {
+        const { data, error } = await supabase
+          .from('peeling_output')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(20);
+        
+        if (!error && data) {
+          setHistory(data);
+        }
+      };
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setMessage({ type: '', text: '' });
+
+        try {
+          const { error } = await supabase
+            .from('peeling_output')
+            .insert({
+              lot_number: selectedLot,
+              shed_name: formData.shedName,
+              input_kg: parseFloat(formData.inputKg),
+              output_species: formData.outputSpecies,
+              output_grade: formData.outputGrade,
+              output_count: formData.outputCount,
+              output_qty_kg: parseFloat(formData.outputQtyKg),
+              yield_percent: parseFloat(formData.yieldPercent),
+              boxes_out: parseInt(formData.boxesOut),
+              timestamp: new Date().toISOString()
+            });
+
+          if (error) throw error;
+
+          setMessage({ type: 'success', text: 'Peeling report submitted successfully' });
+          setFormData({
+            shedName: '',
+            inputKg: '',
+            outputSpecies: '',
+            outputGrade: '',
+            outputCount: '',
+            outputQtyKg: '',
+            yieldPercent: '',
+            boxesOut: ''
+          });
+          setSelectedLot('');
+          loadHistory();
+        } catch (error) {
+          setMessage({ type: 'error', text: error.message });
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      return (
+        <div className="content">
+          <div className="card">
+            <h3>Submit Peeling Report</h3>
+            {message.text && (
+              <div className={`alert alert-${message.type}`}>{message.text}</div>
+            )}
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label>Select Lot</label>
+                <select
+                  value={selectedLot}
+                  onChange={(e) => setSelectedLot(e.target.value)}
+                  required
+                >
+                  <option value="">Choose lot...</option>
+                  {lots.map(lot => (
+                    <option key={lot.id} value={lot.lot_number}>
+                      {lot.lot_number} - {lot.species}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Shed Name</label>
+                <select
+                  value={formData.shedName}
+                  onChange={(e) => setFormData({...formData, shedName: e.target.value})}
+                  required
+                >
+                  <option value="">Choose shed...</option>
+                  <option value="Offsite">Offsite</option>
+                  <option value="PPC">PPC</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Input (kg)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={formData.inputKg}
+                  onChange={(e) => setFormData({...formData, inputKg: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Output Species</label>
+                <input
+                  type="text"
+                  value={formData.outputSpecies}
+                  onChange={(e) => setFormData({...formData, outputSpecies: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Output Grade</label>
+                <input
+                  type="text"
+                  value={formData.outputGrade}
+                  onChange={(e) => setFormData({...formData, outputGrade: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Output Count</label>
+                <input
+                  type="text"
+                  value={formData.outputCount}
+                  onChange={(e) => setFormData({...formData, outputCount: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Output Qty (kg)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={formData.outputQtyKg}
+                  onChange={(e) => setFormData({...formData, outputQtyKg: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Yield %</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={formData.yieldPercent}
+                  onChange={(e) => setFormData({...formData, yieldPercent: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Boxes Out</label>
+                <input
+                  type="number"
+                  value={formData.boxesOut}
+                  onChange={(e) => setFormData({...formData, boxesOut: e.target.value})}
+                  required
+                />
+              </div>
+              <button type="submit" className="btn" disabled={loading}>
+                {loading ? 'Submitting...' : 'Submit Report'}
+              </button>
+            </form>
+          </div>
+
+          <div className="card">
+            <h3>Peeling History</h3>
+            {history.length === 0 ? (
+              <div className="empty-state">No peeling reports yet</div>
+            ) : (
+              history.map(record => (
+                <div key={record.id} className="list-item">
+                  <div className="list-item-header">
+                    <div className="list-item-title">{record.lot_number}</div>
+                    <div className="list-item-badge">{record.yield_percent}%</div>
+                  </div>
+                  <div className="list-item-meta">
+                    {record.shed_name} - {record.output_species} {record.output_count}
+                  </div>
+                  <div className="list-item-meta">
+                    {record.input_kg}kg → {record.output_qty_kg}kg ({record.boxes_out} boxes)
+                  </div>
+                  <div className="list-item-meta">
+                    {new Date(record.timestamp).toLocaleString()}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // Production Component
+    function Production() {
+      const [activeTab, setActiveTab] = useState('plan');
+      const [lots, setLots] = useState([]);
+      const [plans, setPlans] = useState([]);
+      const [machineEvents, setMachineEvents] = useState([]);
+      const [tempLogs, setTempLogs] = useState([]);
+      const [packingStatus, setPackingStatus] = useState([]);
+      const [message, setMessage] = useState({ type: '', text: '' });
+      const [loading, setLoading] = useState(false);
+
+      const [planForm, setPlanForm] = useState({
+        lot: '',
+        targetCount: '',
+        buyer: '',
+        targetKg: '',
+        remarks: ''
+      });
+
+      const [machineForm, setMachineForm] = useState({
+        lot: '',
+        machineType: '',
+        eventType: '',
+        loadNumber: ''
+      });
+
+      const [tempForm, setTempForm] = useState({
+        lot: '',
+        tempType: '',
+        temperature: '',
+        photo: null
+      });
+
+      const [packingForm, setPackingForm] = useState({
+        lot: '',
+        buyer: '',
+        countSize: '',
+        casesPacked: '',
+        targetKg: ''
+      });
+
+      useEffect(() => {
+        loadLots();
+        loadPlans();
+        loadMachineEvents();
+        loadTempLogs();
+        loadPackingStatus();
+      }, []);
+
+      const loadLots = async () => {
+        const { data } = await supabase.from('lots').select('*').order('created_at', { ascending: false });
+        if (data) setLots(data);
+      };
+
+      const loadPlans = async () => {
+        const { data } = await supabase.from('production_plans').select('*').order('created_at', { ascending: false });
+        if (data) setPlans(data);
+      };
+
+      const loadMachineEvents = async () => {
+        const { data } = await supabase.from('machine_events').select('*').order('timestamp', { ascending: false });
+        if (data) setMachineEvents(data);
+      };
+
+      const loadTempLogs = async () => {
+        const { data } = await supabase.from('temp_logs').select('*').order('timestamp', { ascending: false });
+        if (data) setTempLogs(data);
+      };
+
+      const loadPackingStatus = async () => {
+        const { data } = await supabase.from('packing_status').select('*').order('created_at', { ascending: false });
+        if (data) setPackingStatus(data);
+      };
+
+      const handlePlanSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+          const { error } = await supabase.from('production_plans').insert({
+            lot_number: planForm.lot,
+            target_count: planForm.targetCount,
+            buyer: planForm.buyer,
+            target_kg: parseFloat(planForm.targetKg),
+            remarks: planForm.remarks
+          });
+          if (error) throw error;
+          setMessage({ type: 'success', text: 'Production plan added' });
+          setPlanForm({ lot: '', targetCount: '', buyer: '', targetKg: '', remarks: '' });
+          loadPlans();
+        } catch (error) {
+          setMessage({ type: 'error', text: error.message });
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const handleMachineSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+          const timestamp = new Date().toISOString();
+          const { error } = await supabase.from('machine_events').insert({
+            lot_number: machineForm.lot,
+            machine_type: machineForm.machineType,
+            event_type: machineForm.eventType,
+            load_number: machineForm.loadNumber || null,
+            timestamp
+          });
+          if (error) throw error;
+          setMessage({ type: 'success', text: 'Machine event logged' });
+          setMachineForm({ lot: '', machineType: '', eventType: '', loadNumber: '' });
+          loadMachineEvents();
+        } catch (error) {
+          setMessage({ type: 'error', text: error.message });
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const handleTempSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+          let photoUrl = null;
+          if (tempForm.photo) {
+            const fileExt = tempForm.photo.name.split('.').pop();
+            const fileName = `${Date.now()}.${fileExt}`;
+            const { data: uploadData, error: uploadError } = await supabase.storage
+              .from('protech-photos')
+              .upload(fileName, tempForm.photo);
+            if (uploadError) throw uploadError;
+            photoUrl = `https://inkephezabwcdlvnooaa.supabase.co/storage/v1/object/public/protech-photos/${fileName}`;
+          }
+
+          const { error } = await supabase.from('temp_logs').insert({
+            lot_number: tempForm.lot,
+            temp_type: tempForm.tempType,
+            temperature: parseFloat(tempForm.temperature),
+            photo_url: photoUrl,
+            timestamp: new Date().toISOString()
+          });
+          if (error) throw error;
+          setMessage({ type: 'success', text: 'Temperature logged' });
+          setTempForm({ lot: '', tempType: '', temperature: '', photo: null });
+          loadTempLogs();
+        } catch (error) {
+          setMessage({ type: 'error', text: error.message });
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const handlePackingSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+          const balance = parseFloat(packingForm.targetKg) - parseFloat(packingForm.casesPacked);
+          const { error } = await supabase.from('packing_status').insert({
+            lot_number: packingForm.lot,
+            buyer: packingForm.buyer,
+            count_size: packingForm.countSize,
+            cases_packed: parseInt(packingForm.casesPacked),
+            balance
+          });
+          if (error) throw error;
+          setMessage({ type: 'success', text: 'Packing status updated' });
+          setPackingForm({ lot: '', buyer: '', countSize: '', casesPacked: '', targetKg: '' });
+          loadPackingStatus();
+        } catch (error) {
+          setMessage({ type: 'error', text: error.message });
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      return (
+        <div>
+          <div className="tabs">
+            <button className={`tab ${activeTab === 'plan' ? 'active' : ''}`} onClick={() => setActiveTab('plan')}>Plan</button>
+            <button className={`tab ${activeTab === 'machine' ? 'active' : ''}`} onClick={() => setActiveTab('machine')}>Machine</button>
+            <button className={`tab ${activeTab === 'temp' ? 'active' : ''}`} onClick={() => setActiveTab('temp')}>Temp</button>
+            <button className={`tab ${activeTab === 'packing' ? 'active' : ''}`} onClick={() => setActiveTab('packing')}>Packing</button>
+          </div>
+
+          <div className="content">
+            {message.text && <div className={`alert alert-${message.type}`}>{message.text}</div>}
+
+            {activeTab === 'plan' && (
+              <>
+                <div className="card">
+                  <h3>Production Plan</h3>
+                  <form onSubmit={handlePlanSubmit}>
+                    <div className="form-group">
+                      <label>Lot</label>
+                      <select value={planForm.lot} onChange={(e) => setPlanForm({...planForm, lot: e.target.value})} required>
+                        <option value="">Select lot...</option>
+                        {lots.map(lot => <option key={lot.id} value={lot.lot_number}>{lot.lot_number}</option>)}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>Target Count</label>
+                      <input type="text" value={planForm.targetCount} onChange={(e) => setPlanForm({...planForm, targetCount: e.target.value})} required />
+                    </div>
+                    <div className="form-group">
+                      <label>Buyer</label>
+                      <input type="text" value={planForm.buyer} onChange={(e) => setPlanForm({...planForm, buyer: e.target.value})} required />
+                    </div>
+                    <div className="form-group">
+                      <label>Target (kg)</label>
+                      <input type="number" step="0.01" value={planForm.targetKg} onChange={(e) => setPlanForm({...planForm, targetKg: e.target.value})} required />
+                    </div>
+                    <div className="form-group">
+                      <label>Remarks</label>
+                      <textarea value={planForm.remarks} onChange={(e) => setPlanForm({...planForm, remarks: e.target.value})}></textarea>
+                    </div>
+                    <button type="submit" className="btn" disabled={loading}>Submit Plan</button>
+                  </form>
+                </div>
+                <div className="card">
+                  <h3>Plans</h3>
+                  {plans.map(p => (
+                    <div key={p.id} className="list-item">
+                      <div className="list-item-title">{p.lot_number}</div>
+                      <div className="list-item-meta">{p.buyer} - {p.target_count} - {p.target_kg}kg</div>
+                      <div className="list-item-meta">{p.remarks}</div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {activeTab === 'machine' && (
+              <>
+                <div className="card">
+                  <h3>Log Machine Event</h3>
+                  <form onSubmit={handleMachineSubmit}>
+                    <div className="form-group">
+                      <label>Lot</label>
+                      <select value={machineForm.lot} onChange={(e) => setMachineForm({...machineForm, lot: e.target.value})} required>
+                        <option value="">Select lot...</option>
+                        {lots.map(lot => <option key={lot.id} value={lot.lot_number}>{lot.lot_number}</option>)}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>Machine Type</label>
+                      <select value={machineForm.machineType} onChange={(e) => setMachineForm({...machineForm, machineType: e.target.value})} required>
+                        <option value="">Select machine...</option>
+                        <option value="Ice Machine">Ice Machine</option>
+                        <option value="Plate Freezer">Plate Freezer</option>
+                        <option value="Tunnel">Tunnel</option>
+                        <option value="IQF Infeed">IQF Infeed</option>
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>Event Type</label>
+                      <select value={machineForm.eventType} onChange={(e) => setMachineForm({...machineForm, eventType: e.target.value})} required>
+                        <option value="">Select event...</option>
+                        <option value="Start">Start</option>
+                        <option value="Stop">Stop</option>
+                      </select>
+                    </div>
+                    {machineForm.machineType === 'Plate Freezer' && (
+                      <div className="form-group">
+                        <label>Load Number</label>
+                        <input type="text" value={machineForm.loadNumber} onChange={(e) => setMachineForm({...machineForm, loadNumber: e.target.value})} />
+                      </div>
+                    )}
+                    <button type="submit" className="btn" disabled={loading}>Log Event</button>
+                  </form>
+                </div>
+                <div className="card">
+                  <h3>Machine Events</h3>
+                  {machineEvents.map(e => (
+                    <div key={e.id} className="list-item">
+                      <div className="list-item-title">{e.machine_type} - {e.event_type}</div>
+                      <div className="list-item-meta">{e.lot_number} {e.load_number && `- Load ${e.load_number}`}</div>
+                      <div className="list-item-meta">{new Date(e.timestamp).toLocaleString()}</div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {activeTab === 'temp' && (
+              <>
+                <div className="card">
+                  <h3>Log Temperature</h3>
+                  <form onSubmit={handleTempSubmit}>
+                    <div className="form-group">
+                      <label>Lot</label>
+                      <select value={tempForm.lot} onChange={(e) => setTempForm({...tempForm, lot: e.target.value})} required>
+                        <option value="">Select lot...</option>
+                        {lots.map(lot => <option key={lot.id} value={lot.lot_number}>{lot.lot_number}</option>)}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>Type</label>
+                      <select value={tempForm.tempType} onChange={(e) => setTempForm({...tempForm, tempType: e.target.value})} required>
+                        <option value="">Select type...</option>
+                        <option value="IQF Infeed">IQF Infeed</option>
+                        <option value="Tunnel">Tunnel</option>
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>Temperature (°C)</label>
+                      <input type="number" step="0.1" value={tempForm.temperature} onChange={(e) => setTempForm({...tempForm, temperature: e.target.value})} required />
+                    </div>
+                    <div className="form-group">
+                      <label>Photo</label>
+                      <input type="file" accept="image/*" onChange={(e) => setTempForm({...tempForm, photo: e.target.files[0]})} />
+                    </div>
+                    <button type="submit" className="btn" disabled={loading}>Log Temperature</button>
+                  </form>
+                </div>
+                <div className="card">
+                  <h3>Temperature Logs</h3>
+                  {tempLogs.map(t => (
+                    <div key={t.id} className="list-item">
+                      <div className="list-item-title">{t.temp_type}</div>
+                      <div className="list-item-meta">{t.lot_number} - {t.temperature}°C</div>
+                      <div className="list-item-meta">{new Date(t.timestamp).toLocaleString()}</div>
+                      {t.photo_url && <img src={t.photo_url} className="photo-preview" alt="Temperature" />}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {activeTab === 'packing' && (
+              <>
+                <div className="card">
+                  <h3>Update Packing Status</h3>
+                  <form onSubmit={handlePackingSubmit}>
+                    <div className="form-group">
+                      <label>Lot</label>
+                      <select value={packingForm.lot} onChange={(e) => setPackingForm({...packingForm, lot: e.target.value})} required>
+                        <option value="">Select lot...</option>
+                        {lots.map(lot => <option key={lot.id} value={lot.lot_number}>{lot.lot_number}</option>)}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>Buyer</label>
+                      <input type="text" value={packingForm.buyer} onChange={(e) => setPackingForm({...packingForm, buyer: e.target.value})} required />
+                    </div>
+                    <div className="form-group">
+                      <label>Count Size</label>
+                      <input type="text" value={packingForm.countSize} onChange={(e) => setPackingForm({...packingForm, countSize: e.target.value})} required />
+                    </div>
+                    <div className="form-group">
+                      <label>Target (kg)</label>
+                      <input type="number" step="0.01" value={packingForm.targetKg} onChange={(e) => setPackingForm({...packingForm, targetKg: e.target.value})} required />
+                    </div>
+                    <div className="form-group">
+                      <label>Cases Packed</label>
+                      <input type="number" value={packingForm.casesPacked} onChange={(e) => setPackingForm({...packingForm, casesPacked: e.target.value})} required />
+                    </div>
+                    {packingForm.targetKg && packingForm.casesPacked && (
+                      <div className="stat-card" style={{marginBottom: '16px'}}>
+                        <div className="stat-label">Balance</div>
+                        <div className="stat-value">{(parseFloat(packingForm.targetKg) - parseFloat(packingForm.casesPacked)).toFixed(2)} kg</div>
+                      </div>
+                    )}
+                    <button type="submit" className="btn" disabled={loading}>Update Status</button>
+                  </form>
+                </div>
+                <div className="card">
+                  <h3>Packing Status</h3>
+                  {packingStatus.map(p => (
+                    <div key={p.id} className="list-item">
+                      <div className="list-item-title">{p.lot_number} - {p.buyer}</div>
+                      <div className="list-item-meta">{p.count_size}</div>
+                      <div className="list-item-meta">Packed: {p.cases_packed} | Balance: {p.balance}kg</div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // QC Component
+    function QC() {
+      const [activeTab, setActiveTab] = useState('block');
+      const [lots, setLots] = useState([]);
+      const [qcLogs, setQcLogs] = useState([]);
+      const [message, setMessage] = useState({ type: '', text: '' });
+      const [loading, setLoading] = useState(false);
+
+      const [form, setForm] = useState({
+        lot: '',
+        logType: 'block_setting',
+        product: '',
+        count: '',
+        actualCount: '',
+        weight: '',
+        temperature: '',
+        photo: null,
+        buyer: '',
+        glazePercent: '',
+        fillingWeight: '',
+        cases: '',
+        packets: ''
+      });
+
+      useEffect(() => {
+        loadLots();
+        loadQCLogs();
+      }, []);
+
+      const loadLots = async () => {
+        const { data } = await supabase.from('lots').select('*').order('created_at', { ascending: false });
+        if (data) setLots(data);
+      };
+
+      const loadQCLogs = async () => {
+        const { data } = await supabase.from('qc_logs').select('*').order('timestamp', { ascending: false });
+        if (data) setQcLogs(data);
+      };
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+          let photoUrl = null;
+          if (form.photo) {
+            const fileExt = form.photo.name.split('.').pop();
+            const fileName = `${Date.now()}.${fileExt}`;
+            const { data: uploadData, error: uploadError } = await supabase.storage
+              .from('protech-photos')
+              .upload(fileName, form.photo);
+            if (uploadError) throw uploadError;
+            photoUrl = `https://inkephezabwcdlvnooaa.supabase.co/storage/v1/object/public/protech-photos/${fileName}`;
+          }
+
+          const payload = {
+            lot_number: form.lot,
+            log_type: form.logType,
+            timestamp: new Date().toISOString(),
+            photo_url: photoUrl
+          };
+
+          if (form.logType === 'block_setting') {
+            payload.product = form.product;
+            payload.count = form.count;
+            payload.actual_count = form.actualCount;
+            payload.weight = parseFloat(form.weight);
+          } else if (form.logType.includes('core_temp')) {
+            payload.temperature = parseFloat(form.temperature);
+          } else if (form.logType === 'repacking_specs') {
+            payload.buyer = form.buyer;
+            payload.glaze_percent = parseFloat(form.glazePercent);
+            payload.filling_weight = parseFloat(form.fillingWeight);
+          } else if (form.logType === 'rider_insertion') {
+            payload.buyer = form.buyer;
+            payload.product = form.product;
+            payload.count = form.count;
+          } else if (form.logType === 'temp_before_stuffing') {
+            payload.temperature = parseFloat(form.temperature);
+          } else if (form.logType === 'final_output') {
+            payload.buyer = form.buyer;
+            payload.cases = parseInt(form.cases);
+            payload.packets = parseInt(form.packets);
+          }
+
+          const { error } = await supabase.from('qc_logs').insert(payload);
+          if (error) throw error;
+
+          setMessage({ type: 'success', text: 'QC log submitted' });
+          setForm({
+            lot: form.lot,
+            logType: 'block_setting',
+            product: '',
+            count: '',
+            actualCount: '',
+            weight: '',
+            temperature: '',
+            photo: null,
+            buyer: '',
+            glazePercent: '',
+            fillingWeight: '',
+            cases: '',
+            packets: ''
+          });
+          loadQCLogs();
+        } catch (error) {
+          setMessage({ type: 'error', text: error.message });
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      return (
+        <div>
+          <div className="tabs">
+            <button className={`tab ${activeTab === 'block' ? 'active' : ''}`} onClick={() => setActiveTab('block')}>Block</button>
+            <button className={`tab ${activeTab === 'temp' ? 'active' : ''}`} onClick={() => setActiveTab('temp')}>Temp</button>
+            <button className={`tab ${activeTab === 'repack' ? 'active' : ''}`} onClick={() => setActiveTab('repack')}>Repack</button>
+            <button className={`tab ${activeTab === 'output' ? 'active' : ''}`} onClick={() => setActiveTab('output')}>Output</button>
+            <button className={`tab ${activeTab === 'history' ? 'active' : ''}`} onClick={() => setActiveTab('history')}>History</button>
+          </div>
+
+          <div className="content">
+            {message.text && <div className={`alert alert-${message.type}`}>{message.text}</div>}
+
+            {activeTab === 'block' && (
+              <div className="card">
+                <h3>Block Setting</h3>
+                <form onSubmit={handleSubmit}>
+                  <input type="hidden" value={form.logType = 'block_setting'} />
+                  <div className="form-group">
+                    <label>Lot</label>
+                    <select value={form.lot} onChange={(e) => setForm({...form, lot: e.target.value})} required>
+                      <option value="">Select lot...</option>
+                      {lots.map(lot => <option key={lot.id} value={lot.lot_number}>{lot.lot_number}</option>)}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Product</label>
+                    <input type="text" value={form.product} onChange={(e) => setForm({...form, product: e.target.value})} required />
+                  </div>
+                  <div className="form-group">
+                    <label>Count</label>
+                    <input type="text" value={form.count} onChange={(e) => setForm({...form, count: e.target.value})} required />
+                  </div>
+                  <div className="form-group">
+                    <label>Actual Count</label>
+                    <input type="text" value={form.actualCount} onChange={(e) => setForm({...form, actualCount: e.target.value})} required />
+                  </div>
+                  <div className="form-group">
+                    <label>Weight (kg)</label>
+                    <input type="number" step="0.01" value={form.weight} onChange={(e) => setForm({...form, weight: e.target.value})} required />
+                  </div>
+                  <button type="submit" className="btn" disabled={loading}>Submit</button>
+                </form>
+              </div>
+            )}
+
+            {activeTab === 'temp' && (
+              <div className="card">
+                <h3>Core Temperature</h3>
+                <form onSubmit={handleSubmit}>
+                  <div className="form-group">
+                    <label>Lot</label>
+                    <select value={form.lot} onChange={(e) => setForm({...form, lot: e.target.value})} required>
+                      <option value="">Select lot...</option>
+                      {lots.map(lot => <option key={lot.id} value={lot.lot_number}>{lot.lot_number}</option>)}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Type</label>
+                    <select value={form.logType} onChange={(e) => setForm({...form, logType: e.target.value})} required>
+                      <option value="core_temp_before_depanning">Before Depanning</option>
+                      <option value="core_temp_after_depanning">After Depanning</option>
+                      <option value="temp_before_stuffing">Before Container Stuffing</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Temperature (°C)</label>
+                    <input type="number" step="0.1" value={form.temperature} onChange={(e) => setForm({...form, temperature: e.target.value})} required />
+                  </div>
+                  <div className="form-group">
+                    <label>Photo</label>
+                    <input type="file" accept="image/*" onChange={(e) => setForm({...form, photo: e.target.files[0]})} />
+                  </div>
+                  <button type="submit" className="btn" disabled={loading}>Submit</button>
+                </form>
+              </div>
+            )}
+
+            {activeTab === 'repack' && (
+              <div className="card">
+                <h3>Repacking & Rider</h3>
+                <form onSubmit={handleSubmit}>
+                  <div className="form-group">
+                    <label>Lot</label>
+                    <select value={form.lot} onChange={(e) => setForm({...form, lot: e.target.value})} required>
+                      <option value="">Select lot...</option>
+                      {lots.map(lot => <option key={lot.id} value={lot.lot_number}>{lot.lot_number}</option>)}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Type</label>
+                    <select value={form.logType} onChange={(e) => setForm({...form, logType: e.target.value})} required>
+                      <option value="repacking_specs">Repacking Specs</option>
+                      <option value="rider_insertion">Rider Insertion</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Buyer</label>
+                    <input type="text" value={form.buyer} onChange={(e) => setForm({...form, buyer: e.target.value})} required />
+                  </div>
+                  {form.logType === 'repacking_specs' && (
+                    <>
+                      <div className="form-group">
+                        <label>Glaze %</label>
+                        <input type="number" step="0.1" value={form.glazePercent} onChange={(e) => setForm({...form, glazePercent: e.target.value})} required />
+                      </div>
+                      <div className="form-group">
+                        <label>Filling Weight (kg)</label>
+                        <input type="number" step="0.01" value={form.fillingWeight} onChange={(e) => setForm({...form, fillingWeight: e.target.value})} required />
+                      </div>
+                    </>
+                  )}
+                  {form.logType === 'rider_insertion' && (
+                    <>
+                      <div className="form-group">
+                        <label>Product</label>
+                        <input type="text" value={form.product} onChange={(e) => setForm({...form, product: e.target.value})} required />
+                      </div>
+                      <div className="form-group">
+                        <label>Count</label>
+                        <input type="text" value={form.count} onChange={(e) => setForm({...form, count: e.target.value})} required />
+                      </div>
+                    </>
+                  )}
+                  <button type="submit" className="btn" disabled={loading}>Submit</button>
+                </form>
+              </div>
+            )}
+
+            {activeTab === 'output' && (
+              <div className="card">
+                <h3>Final Output</h3>
+                <form onSubmit={handleSubmit}>
+                  <input type="hidden" value={form.logType = 'final_output'} />
+                  <div className="form-group">
+                    <label>Lot</label>
+                    <select value={form.lot} onChange={(e) => setForm({...form, lot: e.target.value})} required>
+                      <option value="">Select lot...</option>
+                      {lots.map(lot => <option key={lot.id} value={lot.lot_number}>{lot.lot_number}</option>)}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Buyer</label>
+                    <input type="text" value={form.buyer} onChange={(e) => setForm({...form, buyer: e.target.value})} required />
+                  </div>
+                  <div className="form-group">
+                    <label>Cases</label>
+                    <input type="number" value={form.cases} onChange={(e) => setForm({...form, cases: e.target.value})} required />
+                  </div>
+                  <div className="form-group">
+                    <label>Packets</label>
+                    <input type="number" value={form.packets} onChange={(e) => setForm({...form, packets: e.target.value})} required />
+                  </div>
+                  <button type="submit" className="btn" disabled={loading}>Submit</button>
+                </form>
+              </div>
+            )}
+
+            {activeTab === 'history' && (
+              <div className="card">
+                <h3>QC History</h3>
+                {qcLogs.map(log => (
+                  <div key={log.id} className="list-item">
+                    <div className="list-item-title">{log.log_type.replace(/_/g, ' ').toUpperCase()}</div>
+                    <div className="list-item-meta">{log.lot_number}</div>
+                    <div className="list-item-meta">{new Date(log.timestamp).toLocaleString()}</div>
+                    {log.temperature && <div className="list-item-meta">Temp: {log.temperature}°C</div>}
+                    {log.product && <div className="list-item-meta">{log.product} - {log.count}</div>}
+                    {log.buyer && <div className="list-item-meta">Buyer: {log.buyer}</div>}
+                    {log.photo_url && <img src={log.photo_url} className="photo-preview" alt="QC" />}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // Manager Dashboard Component
+    function Manager() {
+      const [lots, setLots] = useState([]);
+      const [selectedLot, setSelectedLot] = useState(null);
+      const [lotDetails, setLotDetails] = useState({
+        grades: [],
+        peeling: [],
+        plans: [],
+        machineEvents: [],
+        tempLogs: [],
+        packing: [],
+        qcLogs: []
+      });
+      const [loading, setLoading] = useState(false);
+
+      useEffect(() => {
+        loadLots();
+      }, []);
+
+      const loadLots = async () => {
+        const { data } = await supabase.from('lots').select('*').order('created_at', { ascending: false });
+        if (data) setLots(data);
+      };
+
+      const loadLotDetails = async (lotNumber) => {
+        setLoading(true);
+        try {
+          const [grades, peeling, plans, machineEvents, tempLogs, packing, qcLogs] = await Promise.all([
+            supabase.from('lot_grades').select('*').eq('lot_number', lotNumber),
+            supabase.from('peeling_output').select('*').eq('lot_number', lotNumber),
+            supabase.from('production_plans').select('*').eq('lot_number', lotNumber),
+            supabase.from('machine_events').select('*').eq('lot_number', lotNumber).order('timestamp', { ascending: true }),
+            supabase.from('temp_logs').select('*').eq('lot_number', lotNumber).order('timestamp', { ascending: false }),
+            supabase.from('packing_status').select('*').eq('lot_number', lotNumber),
+            supabase.from('qc_logs').select('*').eq('lot_number', lotNumber).order('timestamp', { ascending: false })
+          ]);
+
+          setLotDetails({
+            grades: grades.data || [],
+            peeling: peeling.data || [],
+            plans: plans.data || [],
+            machineEvents: machineEvents.data || [],
+            tempLogs: tempLogs.data || [],
+            packing: packing.data || [],
+            qcLogs: qcLogs.data || []
+          });
+        } catch (error) {
+          console.error('Error loading lot details:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const selectLot = (lot) => {
+        setSelectedLot(lot);
+        loadLotDetails(lot.lot_number);
+      };
+
+      if (selectedLot) {
+        return (
+          <div className="content">
+            <button className="btn btn-secondary" onClick={() => setSelectedLot(null)}>← Back to Lots</button>
+            
+            <div className="card" style={{marginTop: '16px'}}>
+              <h3>Lot {selectedLot.lot_number}</h3>
+              <div className="stats-grid">
+                <div className="stat-card">
+                  <div className="stat-label">Species</div>
+                  <div className="stat-value" style={{fontSize: '16px'}}>{selectedLot.species}</div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-label">Total Boxes</div>
+                  <div className="stat-value">{selectedLot.total_boxes}</div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-label">Plate Number</div>
+                  <div className="stat-value" style={{fontSize: '14px'}}>{selectedLot.plate_number}</div>
+                </div>
+                <div className="stat-card">
+                  <div className="stat-label">Arrival Date</div>
+                  <div className="stat-value" style={{fontSize: '14px'}}>{new Date(selectedLot.arrival_date).toLocaleDateString()}</div>
+                </div>
+              </div>
+            </div>
+
+            {loading && <div className="loading">Loading lot details...</div>}
+
+            {lotDetails.grades.length > 0 && (
+              <div className="card">
+                <h3>Grade Breakdown</h3>
+                {lotDetails.grades.map((g, i) => (
+                  <div key={i} className="list-item">
+                    <div className="list-item-title">{g.grade} - {g.count}</div>
+                    <div className="list-item-meta">{g.boxes} boxes</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {lotDetails.peeling.length > 0 && (
+              <div className="card">
+                <h3>Peeling Records</h3>
+                {lotDetails.peeling.map((p, i) => (
+                  <div key={i} className="list-item">
+                    <div className="list-item-header">
+                      <div className="list-item-title">{p.shed_name}</div>
+                      <div className="list-item-badge">{p.yield_percent}%</div>
+                    </div>
+                    <div className="list-item-meta">{p.output_species} {p.output_grade} {p.output_count}</div>
+                    <div className="list-item-meta">{p.input_kg}kg → {p.output_qty_kg}kg ({p.boxes_out} boxes)</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {lotDetails.plans.length > 0 && (
+              <div className="card">
+                <h3>Production Plans</h3>
+                {lotDetails.plans.map((p, i) => (
+                  <div key={i} className="list-item">
+                    <div className="list-item-title">{p.buyer} - {p.target_count}</div>
+                    <div className="list-item-meta">Target: {p.target_kg}kg</div>
+                    <div className="list-item-meta">{p.remarks}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {lotDetails.machineEvents.length > 0 && (
+              <div className="card">
+                <h3>Machine Timeline</h3>
+                <div className="timeline">
+                  {lotDetails.machineEvents.map((e, i) => (
+                    <div key={i} className="timeline-item">
+                      <div className="timeline-header">{e.machine_type} - {e.event_type}</div>
+                      <div className="timeline-meta">{new Date(e.timestamp).toLocaleString()}</div>
+                      {e.load_number && <div className="timeline-body">Load {e.load_number}</div>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {lotDetails.tempLogs.length > 0 && (
+              <div className="card">
+                <h3>Temperature Logs</h3>
+                {lotDetails.tempLogs.map((t, i) => (
+                  <div key={i} className="list-item">
+                    <div className="list-item-title">{t.temp_type}</div>
+                    <div className="list-item-meta">{t.temperature}°C</div>
+                    <div className="list-item-meta">{new Date(t.timestamp).toLocaleString()}</div>
+                    {t.photo_url && <img src={t.photo_url} className="photo-preview" alt="Temp" />}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {lotDetails.packing.length > 0 && (
+              <div className="card">
+                <h3>Packing Progress</h3>
+                {lotDetails.packing.map((p, i) => (
+                  <div key={i} className="list-item">
+                    <div className="list-item-title">{p.buyer} - {p.count_size}</div>
+                    <div className="list-item-meta">Packed: {p.cases_packed} | Balance: {p.balance}kg</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {lotDetails.qcLogs.length > 0 && (
+              <div className="card">
+                <h3>QC Logs</h3>
+                {lotDetails.qcLogs.map((q, i) => (
+                  <div key={i} className="list-item">
+                    <div className="list-item-title">{q.log_type.replace(/_/g, ' ').toUpperCase()}</div>
+                    <div className="list-item-meta">{new Date(q.timestamp).toLocaleString()}</div>
+                    {q.temperature && <div className="list-item-meta">Temp: {q.temperature}°C</div>}
+                    {q.product && <div className="list-item-meta">{q.product} - {q.count}</div>}
+                    {q.buyer && <div className="list-item-meta">Buyer: {q.buyer}</div>}
+                    {q.photo_url && <img src={q.photo_url} className="photo-preview" alt="QC" />}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      return (
+        <div className="content">
+          <div className="card">
+            <h3>All Lots</h3>
+            {lots.length === 0 ? (
+              <div className="empty-state">No lots available</div>
+            ) : (
+              lots.map(lot => (
+                <div key={lot.id} className="list-item" onClick={() => selectLot(lot)}>
+                  <div className="list-item-header">
+                    <div className="list-item-title">{lot.lot_number}</div>
+                    <div className="list-item-badge">{lot.total_boxes} boxes</div>
+                  </div>
+                  <div className="list-item-meta">{lot.species} - {lot.plate_number}</div>
+                  <div className="list-item-meta">{new Date(lot.arrival_date).toLocaleDateString()}</div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // Main App Component
+    function App() {
+      const [role, setRole] = useState(null);
+
+      const handleLogin = (userRole) => {
+        setRole(userRole);
+      };
+
+      const handleLogout = () => {
+        setRole(null);
+      };
+
+      if (!role) {
+        return <PINLogin onLogin={handleLogin} />;
+      }
+
+      return (
+        <div>
+          <div className="header">
+            <div className="container">
+              <h1>Protech Tracker</h1>
+              <div className="subtitle">{role.toUpperCase()}</div>
+              <button className="logout-btn" onClick={handleLogout}>Logout</button>
+            </div>
+          </div>
+          <div className="container">
+            {role === 'receiving' && <RMReceiving />}
+            {role === 'peeling' && <Peeling />}
+            {role === 'production' && <Production />}
+            {role === 'qc' && <QC />}
+            {role === 'manager' && <Manager />}
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
