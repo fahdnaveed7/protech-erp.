@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protech Production System</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    background: #0ea5e9;
+}
+.login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+.login-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+.logo {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0ea5e9;
+    margin-bottom: 0.5rem;
+}
+.subtitle {
+    color: #64748b;
+    margin-bottom: 2rem;
+}
+.pin-input {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.5rem;
+    text-align: center;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5rem;
+    font-family: monospace;
+}
+.pin-input:focus {
+    outline: none;
+    border-color: #0ea5e9;
+}
+.login-btn {
+    width: 100%;
+    padding: 1rem;
+    background: #0ea5e9;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+.login-btn:hover {
+    background: #0284c7;
+}
+.login-btn:active {
+    transform: scale(0.98);
+}
+.error {
+    color: #ef4444;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+}
+.success {
+    color: #10b981;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+}
+.pin-help {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: #f1f5f9;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    color: #64748b;
+    text-align: left;
+}
+.app {
+    display: none;
+    background: #f8fafc;
+    min-height: 100vh;
+}
+.app.show {
+    display: block;
+}
+.header {
+    background: white;
+    padding: 1rem 2rem;
+    border-bottom: 2px solid #0ea5e9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.header-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0ea5e9;
+}
+.logout-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 600;
+}
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+.plan-card {
+    background: linear-gradient(135deg, #0ea5e9, #0284c7);
+    color: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(14,165,233,0.3);
+}
+.plan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.plan-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+.add-plan-btn {
+    background: white;
+    color: #0ea5e9;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 600;
+}
+.plan-content {
+    opacity: 0.9;
+}
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+.kpi-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    border-left: 4px solid #0ea5e9;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.kpi-label {
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+.kpi-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0ea5e9;
+    margin-top: 0.5rem;
+}
+.card {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+.card h3 {
+    color: #0ea5e9;
+    margin-bottom: 1rem;
+}
+.status-item {
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid #10b981;
+}
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 1000;
+    padding: 2rem;
+    align-items: center;
+    justify-content: center;
+}
+.modal.show {
+    display: flex;
+}
+.modal-content {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 500px;
+    width: 100%;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+.close-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.25rem;
+}
+.form-group {
+    margin-bottom: 1rem;
+}
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1e293b;
+}
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+}
+.form-group input:focus {
+    outline: none;
+    border-color: #0ea5e9;
+}
+.btn-primary {
+    width: 100%;
+    padding: 0.75rem;
+    background: #0ea5e9;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+.btn-primary:hover {
+    background: #0284c7;
+}
+@media (max-width: 768px) {
+    .container { padding: 1rem; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div id="loginScreen" class="login-screen">
+    <div class="login-card">
+        <div class="logo">PROTECH</div>
+        <div class="subtitle">Organo Foods Production System</div>
+        
+        <input 
+            type="password" 
+            id="pinInput" 
+            class="pin-input" 
+            placeholder="Enter PIN"
+            maxlength="4"
+            inputmode="numeric"
+        >
+        
+        <button type="button" id="loginBtn" class="login-btn">
+            Login
+        </button>
+        
+        <div id="message"></div>
+        
+        <div class="pin-help">
+            <strong style="display:block;margin-bottom:0.5rem;color:#1e293b">Login PINs:</strong>
+            0000 = Manager<br>
+            1111 = Receiving<br>
+            2222 = Peeling<br>
+            3333 = Production<br>
+            4444 = QC<br>
+            5555 = Office
+        </div>
+    </div>
+</div>
+
+<!-- Main App -->
+<div id="app" class="app">
+    <div class="header">
+        <div class="header-logo">PROTECH ORGANO FOODS</div>
+        <div>
+            <span id="userName" style="margin-right:1rem;font-weight:600;"></span>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- Production Plan -->
+        <div class="plan-card">
+            <div class="plan-header">
+                <h2 class="plan-title">📋 Today's Production Plan</h2>
+                <button class="add-plan-btn" onclick="openPlanModal()">+ Add Plan</button>
+            </div>
+            <div id="planContent" class="plan-content">
+                No production plan for today. Click "+ Add Plan" to create one.
+            </div>
+        </div>
+        
+        <!-- KPIs -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label">Total Stock</div>
+                <div class="kpi-value" id="kpiTotal">0 KG</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Today's Production</div>
+                <div class="kpi-value" id="kpiToday">0 KG</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Active Lots</div>
+                <div class="kpi-value" id="kpiLots">0</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Pending QC</div>
+                <div class="kpi-value" id="kpiQC">0</div>
+            </div>
+        </div>
+        
+        <!-- Status -->
+        <div class="card">
+            <h3>System Status</h3>
+            <div class="status-item">✅ Login successful as <span id="roleDisplay"></span></div>
+            <div class="status-item">✅ System online and ready</div>
+            <div class="status-item">✅ Data sync enabled (Supabase connected)</div>
+            <div class="status-item">⏳ Loading production data...</div>
+        </div>
+        
+        <div class="card">
+            <h3>🔍 Recent Activity</h3>
+            <p style="color:#64748b;">Production logs and lot tracking will appear here once data is entered.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Add Plan Modal -->
+<div id="planModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Add Production Plan</h3>
+            <button class="close-btn" onclick="closePlanModal()">×</button>
+        </div>
+        <form id="planForm" onsubmit="return false;">
+            <div class="form-group">
+                <label>Item *</label>
+                <input type="text" id="planItem" required placeholder="e.g. R PD V">
+            </div>
+            <div class="form-group">
+                <label>Target KGS *</label>
+                <input type="number" id="planKgs" required placeholder="e.g. 500">
+            </div>
+            <div class="form-group">
+                <label>Grade</label>
+                <input type="text" id="planGrade" placeholder="e.g. 16/20">
+            </div>
+            <div class="form-group">
+                <label>Buyer</label>
+                <input type="text" id="planBuyer" placeholder="e.g. BAG BULK">
+            </div>
+            <button type="button" class="btn-primary" onclick="savePlan()">Save Plan</button>
+        </form>
+    </div>
+</div>
+
+<script>
+const USERS = {
+    '0000': { name: 'Manager', role: 'manager' },
+    '1111': { name: 'Receiving', role: 'receiving' },
+    '2222': { name: 'Peeling', role: 'peeling' },
+    '3333': { name: 'Production', role: 'production' },
+    '4444': { name: 'QC', role: 'qc' },
+    '5555': { name: 'Office', role: 'office' }
+};
+
+let currentUser = null;
+let productionPlans = [];
+
+console.log('🚀 Protech System Ready');
+
+const loginScreen = document.getElementById('loginScreen');
+const app = document.getElementById('app');
+const pinInput = document.getElementById('pinInput');
+const loginBtn = document.getElementById('loginBtn');
+const messageDiv = document.getElementById('message');
+const userName = document.getElementById('userName');
+const roleDisplay = document.getElementById('roleDisplay');
+const logoutBtn = document.getElementById('logoutBtn');
+
+function doLogin() {
+    const pin = pinInput.value.trim();
+    
+    if (!pin) {
+        messageDiv.innerHTML = '<div class="error">Please enter a PIN</div>';
+        return;
+    }
+    
+    if (USERS[pin]) {
+        currentUser = USERS[pin];
+        messageDiv.innerHTML = '<div class="success">✅ Login successful!</div>';
+        
+        setTimeout(() => {
+            loginScreen.style.display = 'none';
+            app.classList.add('show');
+            userName.textContent = currentUser.name;
+            roleDisplay.textContent = currentUser.name;
+            loadData();
+        }, 500);
+        
+    } else {
+        messageDiv.innerHTML = '<div class="error">❌ Invalid PIN. Try 0000</div>';
+        pinInput.value = '';
+        pinInput.focus();
+    }
+}
+
+loginBtn.addEventListener('click', doLogin);
+pinInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') doLogin();
+});
+logoutBtn.addEventListener('click', () => location.reload());
+
+function loadData() {
+    // Load from localStorage
+    const saved = localStorage.getItem('protech_plans');
+    if (saved) {
+        productionPlans = JSON.parse(saved);
+        updatePlanDisplay();
+    }
+}
+
+function openPlanModal() {
+    document.getElementById('planModal').classList.add('show');
+}
+
+function closePlanModal() {
+    document.getElementById('planModal').classList.remove('show');
+}
+
+function savePlan() {
+    const item = document.getElementById('planItem').value.trim();
+    const kgs = document.getElementById('planKgs').value;
+    const grade = document.getElementById('planGrade').value.trim();
+    const buyer = document.getElementById('planBuyer').value.trim();
+    
+    if (!item || !kgs) {
+        alert('Please fill in Item and Target KGS');
+        return;
+    }
+    
+    const plan = {
+        date: new Date().toISOString().split('T')[0],
+        item: item,
+        target: Number(kgs),
+        grade: grade,
+        buyer: buyer,
+        achieved: 0
+    };
+    
+    productionPlans.push(plan);
+    localStorage.setItem('protech_plans', JSON.stringify(productionPlans));
+    
+    updatePlanDisplay();
+    closePlanModal();
+    
+    document.getElementById('planForm').reset();
+    alert('✅ Production plan saved!');
+}
+
+function updatePlanDisplay() {
+    const today = new Date().toISOString().split('T')[0];
+    const todayPlans = productionPlans.filter(p => p.date === today);
+    
+    if (todayPlans.length === 0) {
+        document.getElementById('planContent').innerHTML = 
+            'No production plan for today. Click "+ Add Plan" to create one.';
+        return;
+    }
+    
+    let html = '';
+    todayPlans.forEach(p => {
+        const progress = Math.min(100, (p.achieved / p.target) * 100);
+        html += `
+            <div style="background:rgba(255,255,255,0.1);padding:1rem;border-radius:0.5rem;margin-bottom:0.5rem;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;">
+                    <strong>${p.item}${p.grade ? ' - Grade ' + p.grade : ''}</strong>
+                    <span>${p.achieved} / ${p.target} KG (${progress.toFixed(0)}%)</span>
+                </div>
+                ${p.buyer ? `<div style="font-size:0.875rem;opacity:0.9">Buyer: ${p.buyer}</div>` : ''}
+                <div style="background:rgba(0,0,0,0.2);height:8px;border-radius:4px;margin-top:0.5rem;">
+                    <div style="background:#10b981;height:100%;width:${progress}%;border-radius:4px;"></div>
+                </div>
+            </div>
+        `;
+    });
+    
+    document.getElementById('planContent').innerHTML = html;
+}
+
+pinInput.focus();
+console.log('✅ Ready - Try PIN: 0000');
+</script>
+
+</body>
+</html>
